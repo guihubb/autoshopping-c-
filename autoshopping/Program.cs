@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Net.NetworkInformation;
 
 class Program
 {
-    static List<Pessoa> pessoas = new List<Pessoa>();
+    static List<Cliente> clientes = new List<Cliente>();
+    static List<Vendedor> vendedores = new List<Vendedor>();
+    static List<Moto> motos = new List<Moto>();
+    static List<Carro> carros = new List<Carro>();
+
+
     abstract class Pessoa
     {
         public int Id;
@@ -34,7 +40,7 @@ class Program
 
         public override void ExibirDados()
         {
-            Console.WriteLine($"--- Dados do Vendedor {Matricula}");
+            Console.WriteLine($"--- Dados do Vendedor {Matricula} ---");
             Console.WriteLine($"ID: {Id}");
             Console.WriteLine($"Nome: {Nome}");
             Console.WriteLine($"Telefone: {Telefone}");
@@ -53,7 +59,7 @@ class Program
 
         public override void ExibirDados()
         {
-            Console.WriteLine($"--- Dados do Cliente {Id}");
+            Console.WriteLine($"--- Dados do Cliente {Id} ---");
             Console.WriteLine($"Nome: {Nome}");
             Console.WriteLine($"Telefone: {Telefone}");
             if (PercentualDesconto > 0)
@@ -64,6 +70,76 @@ class Program
             {
                 Console.WriteLine($"Não possui desconto.");
             }
+        }
+    }
+
+    abstract class Veiculo
+    {
+        public int Id;
+        public string Marca;
+        public string Modelo;
+        public int Ano;
+        public float Preco;
+        public string Cor;
+
+        protected Veiculo(int id, string marca, string modelo, int ano, float preco, string cor)
+        {
+            Id = id;
+            Marca = marca;
+            Modelo = modelo;
+            Ano = ano;
+            Preco = preco;
+            Cor = cor;
+        }
+
+        public abstract void ExibirDados();
+    }
+
+    class Carro : Veiculo
+    {
+        public int QuantidadePortas;
+        public string TipoCombustivel;
+
+        public Carro(int id, string marca, string modelo, int ano, float preco, string cor, int quantidadePortas, string tipoCombustivel) : base(id, marca, modelo, ano, preco, cor)
+        {
+            QuantidadePortas = quantidadePortas;
+            TipoCombustivel = tipoCombustivel;
+        }
+
+        public override void ExibirDados()
+        {
+            Console.WriteLine($"--- Dados do Carro {Id} ---");
+            Console.WriteLine($"Marca: {Marca}");
+            Console.WriteLine($"Modelo: {Modelo}");
+            Console.WriteLine($"Ano: {Ano}");
+            Console.WriteLine($"Cor: {Cor}");
+            Console.WriteLine($"Preco: R${Preco}");
+            Console.WriteLine($"Quantidade de portas: {QuantidadePortas}");
+            Console.WriteLine($"Tipo de combustível: {TipoCombustivel}");
+        }
+    }
+
+    class Moto : Veiculo
+    {
+        public int Cilindradas;
+        public string TipoPartida;
+
+        public Moto(int id, string marca, string modelo, int ano, float preco, string cor, int cilindradas, string tipoPartida) : base(id, marca, modelo, ano, preco, cor)
+        {
+            Cilindradas = cilindradas;
+            TipoPartida = tipoPartida;
+        }
+
+        public override void ExibirDados()
+        {
+            Console.WriteLine($"--- Dados da Moto {Id} ---");
+            Console.WriteLine($"Marca: {Marca}");
+            Console.WriteLine($"Modelo: {Modelo}");
+            Console.WriteLine($"Ano: {Ano}");
+            Console.WriteLine($"Cor: {Cor}");
+            Console.WriteLine($"Preco: R${Preco}");
+            Console.WriteLine($"Cilindradas: {Cilindradas}");
+            Console.WriteLine($"Tipo de partida: {TipoPartida}");
         }
     }
     static void Main(string[] args)
@@ -77,7 +153,7 @@ class Program
             {
                 Opcoes(op);
             }
-        }while(op != 0);
+        } while (op != 0);
     }
 
     private static int MenuPrincipal()
@@ -111,19 +187,19 @@ class Program
                 CadastrarCliente();
                 break;
             case 2:
-                Console.WriteLine("Cadastro de vendedor");
+                CadastrarVendedor();
                 break;
             case 3:
-                Console.WriteLine("Cadastro de veículo");
+                CadastroVeiculo();
                 break;
             case 4:
-                Console.WriteLine("Listagem de veículos em estoque");
+                ListagemVeiculo();
                 break;
             case 5:
                 ListarCliente();
                 break;
             case 6:
-                Console.WriteLine("Listagem de vendedores");
+                ListarVendedor();
                 break;
             case 7:
                 Console.WriteLine("Realizar venda");
@@ -139,7 +215,11 @@ class Program
 
     private static void CadastrarCliente()
     {
-        Console.WriteLine("Digite o id do cliente: ");
+        Console.WriteLine("========================================");
+        Console.WriteLine("         CADASTRO DE CLIENTE");
+        Console.WriteLine("========================================");
+
+        Console.WriteLine("\nDigite o id do cliente: ");
         int id = int.Parse(Console.ReadLine());
 
         Console.WriteLine("Digite o nome do cliente: ");
@@ -154,15 +234,188 @@ class Program
         Console.WriteLine("Digite o percentual de desconto do cliente:");
         float percentualDesconto = float.Parse(Console.ReadLine());
 
-        pessoas.Add(new Cliente(id, nome, telefone, cpf, percentualDesconto));
+        clientes.Add(new Cliente(id, nome, telefone, cpf, percentualDesconto));
+
+        Console.WriteLine("Cadastro realizado!");
     }
 
     private static void ListarCliente()
     {
-        foreach (Cliente c in pessoas)
+        foreach (Cliente c in clientes)
         {
             Console.WriteLine("\n");
             c.ExibirDados();
         }
+    }
+
+    private static void CadastrarVendedor()
+    {
+        Console.WriteLine("========================================");
+        Console.WriteLine("         CADASTRO DE VENDEDOR");
+        Console.WriteLine("========================================");
+
+        Console.WriteLine("\nDigite o id do vendedor: ");
+        int id = int.Parse(Console.ReadLine());
+
+        Console.WriteLine("Digite o nome do vendedor: ");
+        string nome = Console.ReadLine();
+
+        Console.WriteLine("Digite o telefone do vendedor");
+        string telefone = Console.ReadLine();
+
+        Console.WriteLine("Digite o CPF do vendedor");
+        string cpf = Console.ReadLine();
+
+        Console.WriteLine("Digite a matrícula do vendedor: ");
+        string matricula = Console.ReadLine();
+
+        Console.WriteLine("Digite o percentual de desconto do vendedor:");
+        float percentualComissao = float.Parse(Console.ReadLine());
+
+        vendedores.Add(new Vendedor(id, nome, telefone, cpf, matricula, percentualComissao));
+
+        Console.WriteLine("Cadastro realizado!");
+    }
+
+    private static void ListarVendedor()
+    {
+        foreach (Vendedor v in vendedores)
+        {
+            Console.WriteLine("\n");
+            v.ExibirDados();
+        }
+    }
+
+    private static void CadastroVeiculo()
+    {
+        int op = 0;
+        do
+        {
+            Console.WriteLine("========================================");
+            Console.WriteLine("         CADASTRO DE VEÍCULO");
+            Console.WriteLine("========================================");
+
+            Console.WriteLine("1 - Cadastrar Moto");
+            Console.WriteLine("2 - Cadastrar Carro");
+            Console.WriteLine("0 - Sair");
+
+            Console.WriteLine("\n");
+            Console.WriteLine("Digite a sua opção: ");
+            op = int.Parse(Console.ReadLine());
+
+            if (op == 1)
+            {
+                CadastrarMoto();
+                Console.WriteLine("Cadastro realizado!");
+            }
+
+            if (op == 2)
+            {
+                CadastrarCarro();
+                Console.WriteLine("Cadastro realizado!");
+            }
+        } while (op != 0);
+    }
+
+    private static void ListagemVeiculo()
+    {
+        int op = 0;
+        do
+        {
+            Console.WriteLine("========================================");
+            Console.WriteLine("         LISTA DE VEÍCULO");
+            Console.WriteLine("========================================");
+
+            Console.WriteLine("1 - Listar Motos");
+            Console.WriteLine("2 - Listar Carros");
+            Console.WriteLine("0 - Sair");
+
+            Console.WriteLine("\n");
+            Console.WriteLine("Digite a sua opção: ");
+            op = int.Parse(Console.ReadLine());
+
+            if (op == 1)
+            {
+                foreach (Moto m in motos)
+                {
+                    m.ExibirDados();
+                }
+            }
+
+            if (op == 2)
+            {
+
+                foreach (Carro c in carros)
+                {
+                    c.ExibirDados();
+                }
+            }
+        } while (op != 0);
+    }
+
+    private static void CadastrarMoto()
+    {
+        Console.WriteLine("========================================");
+        Console.WriteLine("         CADASTRAR MOTO");
+        Console.WriteLine("========================================");
+
+        Console.WriteLine("\nDigite o id: ");
+        int id = int.Parse(Console.ReadLine());
+
+        Console.Write("Digite a marca: ");
+        string marca = Console.ReadLine();
+
+        Console.Write("Digite o modelo: ");
+        string modelo = Console.ReadLine();
+
+        Console.Write("Digite o ano: ");
+        int ano = int.Parse(Console.ReadLine());
+
+        Console.Write("Digite o preco: ");
+        float preco = float.Parse(Console.ReadLine());
+
+        Console.WriteLine("Digite a cor: ");
+        string cor = Console.ReadLine();
+
+        Console.Write("Digite a cilindrada: ");
+        int cilindrada = int.Parse(Console.ReadLine());
+
+        Console.Write("Digite o tipo de partida: ");
+        string tipoPartida = Console.ReadLine();
+
+        motos.Add(new Moto(id, marca, modelo, ano, preco, cor, cilindrada, tipoPartida));
+    }
+
+    private static void CadastrarCarro()
+    {
+        Console.WriteLine("========================================");
+        Console.WriteLine("         CADASTRAR CARRO");
+        Console.WriteLine("========================================");
+
+        Console.WriteLine("\nDigite o id: ");
+        int id = int.Parse(Console.ReadLine());
+
+        Console.Write("Digite a marca: ");
+        string marca = Console.ReadLine();
+
+        Console.Write("Digite o modelo: ");
+        string modelo = Console.ReadLine();
+
+        Console.Write("Digite o ano: ");
+        int ano = int.Parse(Console.ReadLine());
+
+        Console.Write("Digite o preco: ");
+        float preco = float.Parse(Console.ReadLine());
+
+        Console.WriteLine("Digite a cor: ");
+        string cor = Console.ReadLine();
+
+        Console.Write("Digite a quantidade de portas: ");
+        int portas = int.Parse(Console.ReadLine());
+
+        Console.Write("Digite o tipo de combustível: ");
+        string combustível = Console.ReadLine();
+
+        carros.Add(new Carro(id, marca, modelo, ano, preco, cor, portas, combustível));
     }
 }
