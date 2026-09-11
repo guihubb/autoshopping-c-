@@ -7,12 +7,40 @@ class Program
     static List<Vendedor> vendedores = new List<Vendedor>();
     static List<Moto> motos = new List<Moto>();
     static List<Carro> carros = new List<Carro>();
+    static List<Venda> vendas = new List<Venda>();
 
 
-    abstract class Pessoa
+    class Venda
     {
         public int Id;
-        public string Nome;
+        public Cliente Cliente;
+        public Vendedor Vendedor;
+        public Veiculo Veiculo;
+        public float ValorFinal;
+
+        public Venda(int id, Cliente cliente, Vendedor vendedor, Veiculo veiculo, float valorFinal)
+        {
+            Id = id;
+            Cliente = cliente;
+            Vendedor = vendedor;
+            Veiculo = veiculo;
+            ValorFinal = valorFinal;
+        }
+
+        public void ExibirDados()
+        {
+            Console.WriteLine($"--- Dados da Venda {Id} ---");
+            Console.WriteLine($"Vendedor: {Vendedor.Nome}");
+            Console.WriteLine($"Cliente: {Cliente.Nome}");
+            Console.WriteLine($"Veiculo: {Veiculo.ExibirDados}");
+            Console.WriteLine($"Valor Final: {ValorFinal}%");
+
+        }
+    }
+    abstract class Pessoa
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
         public string Telefone;
         public string Cpf;
 
@@ -93,6 +121,8 @@ class Program
         }
 
         public abstract void ExibirDados();
+
+        public abstract void MarcarComoVendido();
     }
 
     class Carro : Veiculo
@@ -117,6 +147,16 @@ class Program
             Console.WriteLine($"Quantidade de portas: {QuantidadePortas}");
             Console.WriteLine($"Tipo de combustível: {TipoCombustivel}");
         }
+
+        public override void MarcarComoVendido()
+        {
+            Console.WriteLine("Insira o ID do carro vendido: ");
+            int idCarro = int.Parse(Console.ReadLine());
+
+            carros.RemoveAll(carros => carros.Id == idCarro);
+
+            Console.WriteLine("Carro vendido!");
+        }
     }
 
     class Moto : Veiculo
@@ -140,6 +180,16 @@ class Program
             Console.WriteLine($"Preco: R${Preco}");
             Console.WriteLine($"Cilindradas: {Cilindradas}");
             Console.WriteLine($"Tipo de partida: {TipoPartida}");
+        }
+
+        public override void MarcarComoVendido()
+        {
+            Console.WriteLine("Insira o ID do carro vendido: ");
+            int idMoto = int.Parse(Console.ReadLine());
+
+            motos.RemoveAll(moto => moto.Id == idMoto);
+
+            Console.WriteLine("Moto Vendida!");
         }
     }
     static void Main(string[] args)
@@ -211,6 +261,11 @@ class Program
                 Console.WriteLine("Saindo...");
                 break;
         }
+    }
+
+    private static void RealizarVenda()
+    {
+        
     }
 
     private static void CadastrarCliente()
