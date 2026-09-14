@@ -405,7 +405,7 @@ class Program
                 }
                 else if (carrosEncontrados.Count == 1)
                 {
-                    veiculoVendido = carrosEncontrados[0]; // Só achou um, seleciona automático
+                    veiculoVendido = carrosEncontrados[0];
                 }
                 else
                 {
