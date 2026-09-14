@@ -30,10 +30,10 @@ class Program
         public void ExibirDados()
         {
             Console.WriteLine($"--- Dados da Venda {Id} ---");
-            Console.WriteLine($"Vendedor: {Vendedor.Nome}");
+            Console.WriteLine($"Vendedor: {Vendedor.Nome} (Matrícula: {Vendedor.Matricula})");
             Console.WriteLine($"Cliente: {Cliente.Nome}");
-            Console.WriteLine($"Veiculo: {Veiculo.ExibirDados}");
-            Console.WriteLine($"Valor Final: {ValorFinal}%");
+            Console.WriteLine($"Veículo: {Veiculo.Marca} {Veiculo.Modelo} ({Veiculo.Ano})");
+            Console.WriteLine($"Valor Final: R$ {ValorFinal:F2}");
 
         }
     }
@@ -252,10 +252,10 @@ class Program
                 ListarVendedor();
                 break;
             case 7:
-                Console.WriteLine("Realizar venda");
+                RealizarVenda();
                 break;
             case 8:
-                Console.WriteLine("Relatório de vendas");
+                ListarVendas();
                 break;
             default:
                 Console.WriteLine("Saindo...");
@@ -265,7 +265,100 @@ class Program
 
     private static void RealizarVenda()
     {
-        
+        Console.WriteLine("========================================");
+        Console.WriteLine("         REALIZAR VENDA");
+        Console.WriteLine("========================================");
+
+        if (clientes.Count() == 0 || vendedores.Count() == 0 || (carros.Count() == 0 && motos.Count() == 0))
+        {
+            Console.WriteLine("Erro: É necessário ter pelo menos um cliente, um vendedor e um veículo cadastrados.");
+            return;
+        }
+
+        Console.WriteLine("\nDigite o ID do Cliente: ");
+        int idCliente = int.Parse(Console.ReadLine());
+        Cliente cliente = clientes.Find(c => c.Id == idCliente);
+
+        if (cliente == null)
+        {
+            Console.WriteLine("Cliente não encontrado");
+            return;
+        }
+
+        Console.WriteLine("Digite a Matrícula do Vendedor: ");
+        string matriculaVendedor = Console.ReadLine();
+        Vendedor vendedor = vendedores.Find(v => v.Matricula == matriculaVendedor);
+
+        if (cliente == null)
+        {
+            Console.WriteLine("Vendedor não encontrado");
+            return;
+        }
+
+        Console.WriteLine("Tipo de Veículo:");
+        Console.WriteLine("1 - Carro");
+        Console.WriteLine("2 - Moto");
+        Console.WriteLine("Digite a sua opção: ");
+        int tipo = int.Parse(Console.ReadLine());
+
+        Console.WriteLine("Digite o ID do Veículo: ");
+        int idVeiculo = int.Parse(Console.ReadLine());
+
+        Veiculo veiculoEscolhido = null;
+
+        if (tipo == 1)
+        {
+            Carro carro = carros.Find(c => c.Id == idVeiculo);
+            if (carro != null)
+            {
+                veiculoEscolhido = carro;
+                carros.Remove(carro);
+            }
+        }
+        else if (tipo == 2)
+        {
+            Moto moto = motos.Find(m => m.Id == idVeiculo);
+            if (moto != null)
+            {
+                veiculoEscolhido = moto;
+                motos.Remove(moto);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Opção inválida");
+        }
+
+        if (veiculoEscolhido == null)
+        {
+            Console.WriteLine("Veículo não encontrado!");
+            return;
+        }
+
+        float valorDesconto = veiculoEscolhido.Preco * (cliente.PercentualDesconto / 100f);
+        float valorFinal = veiculoEscolhido.Preco - valorDesconto;
+
+        int novoIdVenda = vendas.Count() + 1;
+        Venda novaVenda = new Venda(novoIdVenda, cliente, vendedor, veiculoEscolhido, valorFinal);
+        vendas.Add(novaVenda);
+
+        Console.WriteLine("\n----------------------------------------");
+        Console.WriteLine($"Venda #{novoIdVenda} realizada com sucesso!");
+        Console.WriteLine($"Valor Original: R${veiculoEscolhido.Preco:F2}");
+        Console.WriteLine($"Desconto ({cliente.PercentualDesconto}%): R${valorDesconto:F2}");
+        Console.WriteLine($"Comprador: {cliente.Nome}");
+        Console.WriteLine($"Vendedor: {vendedor.Nome}");
+        Console.WriteLine($"Veículo vendido: {veiculoEscolhido.Marca} | {veiculoEscolhido.Modelo} | {veiculoEscolhido.Ano} | {veiculoEscolhido.Cor}");
+        Console.WriteLine("----------------------------------------");
+    }
+
+    private static void ListarVendas()
+    {
+        foreach(Venda v in vendas)
+        {
+            Console.WriteLine("\n");
+            v.ExibirDados();
+        }
     }
 
     private static void CadastrarCliente()
@@ -396,14 +489,17 @@ class Program
                     m.ExibirDados();
                 }
             }
-
-            if (op == 2)
+            else if (op == 2)
             {
 
                 foreach (Carro c in carros)
                 {
                     c.ExibirDados();
                 }
+            }
+            else
+            {
+                Console.WriteLine("Opção inválida. Digite novamente.");
             }
         } while (op != 0);
     }
@@ -414,8 +510,7 @@ class Program
         Console.WriteLine("         CADASTRAR MOTO");
         Console.WriteLine("========================================");
 
-        Console.WriteLine("\nDigite o id: ");
-        int id = int.Parse(Console.ReadLine());
+        int id = motos.Count() + 1;
 
         Console.Write("Digite a marca: ");
         string marca = Console.ReadLine();
@@ -447,8 +542,7 @@ class Program
         Console.WriteLine("         CADASTRAR CARRO");
         Console.WriteLine("========================================");
 
-        Console.WriteLine("\nDigite o id: ");
-        int id = int.Parse(Console.ReadLine());
+        int id = carros.Count() + 1;
 
         Console.Write("Digite a marca: ");
         string marca = Console.ReadLine();
