@@ -68,8 +68,8 @@ class Program
 
         public override void ExibirDados()
         {
-            Console.WriteLine($"--- Dados do Vendedor {Matricula} ---");
-            Console.WriteLine($"ID: {Id}");
+            Console.WriteLine($"--- Dados do Vendedor {Id} ---");
+            Console.WriteLine($"Matrícula: {Matricula}");
             Console.WriteLine($"Nome: {Nome}");
             Console.WriteLine($"Telefone: {Telefone}");
             Console.WriteLine($"Comissão: {PercentualComissao}%");
@@ -285,9 +285,9 @@ class Program
             return;
         }
 
-        Console.WriteLine("Digite a Matrícula do Vendedor: ");
-        string matriculaVendedor = Console.ReadLine();
-        Vendedor vendedor = vendedores.Find(v => v.Matricula == matriculaVendedor);
+        Console.WriteLine("Digite o ID do Vendedor: ");
+        int idVendedor = int.Parse(Console.ReadLine());
+        Vendedor vendedor = vendedores.Find(v => v.Id == idVendedor);
 
         if (cliente == null)
         {
@@ -338,6 +338,8 @@ class Program
         float valorDesconto = veiculoEscolhido.Preco * (cliente.PercentualDesconto / 100f);
         float valorFinal = veiculoEscolhido.Preco - valorDesconto;
 
+        float valorComissao = veiculoEscolhido.Preco * (vendedor.PercentualComissao / 100f);
+
         int novoIdVenda = vendas.Count() + 1;
         Venda novaVenda = new Venda(novoIdVenda, cliente, vendedor, veiculoEscolhido, valorFinal);
         vendas.Add(novaVenda);
@@ -348,6 +350,7 @@ class Program
         Console.WriteLine($"Desconto ({cliente.PercentualDesconto}%): R${valorDesconto:F2}");
         Console.WriteLine($"Comprador: {cliente.Nome}");
         Console.WriteLine($"Vendedor: {vendedor.Nome}");
+        Console.WriteLine($"Comissão: {vendedor.PercentualComissao}%: R${valorComissao:F2}");
         Console.WriteLine($"Veículo vendido: {veiculoEscolhido.Marca} | {veiculoEscolhido.Modelo} | {veiculoEscolhido.Ano} | {veiculoEscolhido.Cor}");
         Console.WriteLine("----------------------------------------");
     }
@@ -367,16 +370,15 @@ class Program
         Console.WriteLine("         CADASTRO DE CLIENTE");
         Console.WriteLine("========================================");
 
-        Console.WriteLine("\nDigite o id do cliente: ");
-        int id = int.Parse(Console.ReadLine());
+        int id = clientes.Count() + 1;
 
         Console.WriteLine("Digite o nome do cliente: ");
         string nome = Console.ReadLine();
 
-        Console.WriteLine("Digite o telefone do cliente");
+        Console.WriteLine("Digite o telefone do cliente: ");
         string telefone = Console.ReadLine();
 
-        Console.WriteLine("Digite o CPF do cliente");
+        Console.WriteLine("Digite o CPF do cliente: ");
         string cpf = Console.ReadLine();
 
         Console.WriteLine("Digite o percentual de desconto do cliente:");
@@ -402,16 +404,15 @@ class Program
         Console.WriteLine("         CADASTRO DE VENDEDOR");
         Console.WriteLine("========================================");
 
-        Console.WriteLine("\nDigite o id do vendedor: ");
-        int id = int.Parse(Console.ReadLine());
+        int id = vendedores.Count() + 1;
 
         Console.WriteLine("Digite o nome do vendedor: ");
         string nome = Console.ReadLine();
 
-        Console.WriteLine("Digite o telefone do vendedor");
+        Console.WriteLine("Digite o telefone do vendedor: ");
         string telefone = Console.ReadLine();
 
-        Console.WriteLine("Digite o CPF do vendedor");
+        Console.WriteLine("Digite o CPF do vendedor: ");
         string cpf = Console.ReadLine();
 
         Console.WriteLine("Digite a matrícula do vendedor: ");
